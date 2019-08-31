@@ -1,5 +1,9 @@
 package myapp.responses;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+
+
 public class Response {
     private String status;
 

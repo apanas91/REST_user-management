@@ -4,15 +4,18 @@ import myapp.models.User;
 import myapp.responses.BaseResponse;
 import myapp.responses.Response;
 import myapp.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.EOFException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    UserService userService = new UserService();
+    @Autowired
+    UserService userService;
 
     @GetMapping
     public List<User> findAllUsers(){
@@ -29,16 +32,22 @@ public class UserController {
     }
 
     @DeleteMapping
-    public Response deleteUser(@RequestBody User request){
+    public ResponseEntity<Response> deleteUser(@RequestBody User request){
         userService.deleteUser(request);
-        return new Response("SUCCESS");
+
+        Response res = new Response("SUCCESS");
+        return  ResponseEntity.ok(res);
     }
 
     @GetMapping("/{id}")
-    public User findUserById (@PathVariable("id") int id){
+    public ResponseEntity<User> findUserById (@PathVariable("id") int id){
         final User userResponse;
         userResponse = userService.findUser(id);
-        return userResponse;
+        if (userResponse == null) {
+            return ResponseEntity.notFound().build();
+
+        }
+        return ResponseEntity.ok(userResponse);
     }
 
 
